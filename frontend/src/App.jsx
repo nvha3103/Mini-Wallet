@@ -3,29 +3,37 @@ import './App.css'
 import AccountInfo from './components/AccountInfo'
 import Login from './components/LoginForm'
 import RegisterForm from './components/RegisterForm'
+import WalletHome from './components/WalletHome'
+import { Route, Routes, useNavigate } from 'react-router'
 
 function App() {
   const [account, setAccount] = useState(null);
-  const [authMode, setAuthMode] = useState('login');
+  const navigate = useNavigate();
 
   return (
     <main className="app-shell">
-      {account ? (
-        <AccountInfo
-          account={account}
-          onLogout={() => setAccount(null)}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Login
+              onLogin={(account) => setAccount(account)}
+              onSwitchToRegister={() => navigate('/register')}
+            />
+          }
         />
-      ) : authMode === 'register' ? (
-        <RegisterForm
-          onRegisterSuccess={() => setAuthMode('login')}
-          onSwitchToLogin={() => setAuthMode('login')}
+        <Route
+          path="/register"
+          element={
+            <RegisterForm
+              onRegisterSuccess={() => navigate('/')}
+              onSwitchToLogin={() => navigate('/')}
+            />
+          }
         />
-      ) : (
-        <Login
-          onLogin={(account) => setAccount(account)}
-          onSwitchToRegister={() => setAuthMode('register')}
-        />
-      )}
+        <Route path="/wallet" element={<WalletHome account={account} onLogout={() => setAccount(null)} />} />
+        <Route path="/account-info" element={<AccountInfo account={account} onLogout={() => setAccount(null)} />} />
+      </Routes>
     </main>
   )
 }

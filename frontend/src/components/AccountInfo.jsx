@@ -1,8 +1,19 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 
 function AccountInfo({ account, onLogout }) {
     const [isLoading, setIsLoading] = useState(false)
     const [message, setMessage] = useState('')
+
+    if (!account) {
+        return (
+            <section className="empty-state">
+                <h2>Please login first</h2>
+                <p>Account details are available after login.</p>
+                <Link className="primary-link" to="/">Back to login</Link>
+            </section>
+        )
+    }
 
     async function handleLogout() {
         setIsLoading(true)
@@ -32,6 +43,7 @@ function AccountInfo({ account, onLogout }) {
     return (
         <section className="account-panel">
             <div className="form-header">
+                <Link className="back-link" to="/wallet">Back to wallet</Link>
                 <h2>Account details</h2>
                 <p>You are currently signed in.</p>
             </div>

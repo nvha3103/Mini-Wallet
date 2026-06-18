@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 
 function Login({ onLogin, onSwitchToRegister }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -30,8 +32,8 @@ function Login({ onLogin, onSwitchToRegister }) {
                 setMessage(result.message || 'Login failed');
                 return;
             }
-
             onLogin(result.account)
+            navigate('/wallet')
         } catch (error) {
             setMessage('Cannot connect to server')
         } finally {
