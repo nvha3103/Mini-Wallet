@@ -1,0 +1,193 @@
+.app-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.08), transparent 34%),
+    linear-gradient(315deg, rgba(245, 158, 11, 0.08), transparent 38%),
+    #f8fafc;
+}
+
+.auth-form,
+.account-panel {
+  width: min(100%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px;
+  color: #1f2937;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  box-sizing: border-box;
+}
+
+.form-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.form-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.form-field span {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: #111827;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-field input:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+}
+
+.primary-button,
+.secondary-button {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.primary-button {
+  color: #ffffff;
+  background: #0f766e;
+}
+
+.primary-button:hover {
+  background: #115e59;
+}
+
+.secondary-button {
+  color: #9f1239;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+}
+
+.secondary-button:hover {
+  background: #ffe4e6;
+}
+
+.primary-button:active,
+.secondary-button:active {
+  transform: translateY(1px);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.text-button {
+  width: fit-content;
+  align-self: center;
+  padding: 0;
+  color: #0f766e;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: #115e59;
+  text-decoration: underline;
+}
+
+.form-message {
+  min-height: 20px;
+  margin: 0;
+  color: #b45309;
+  font-size: 14px;
+  text-align: center;
+}
+
+.account-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.account-list div {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  text-align: left;
+  background: #f9fafb;
+  border: 1px solid #eef2f7;
+  border-radius: 6px;
+}
+
+.account-list dt {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.account-list dd {
+  margin: 0;
+  color: #111827;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    align-items: start;
+    padding: 20px 12px;
+  }
+
+  .auth-form,
+  .account-panel {
+    padding: 22px;
+  }
+}
