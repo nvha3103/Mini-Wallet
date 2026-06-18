@@ -5,7 +5,7 @@ import Login from './components/LoginForm'
 import RegisterForm from './components/RegisterForm'
 import WalletHome from './components/WalletHome'
 import { Route, Routes, useNavigate } from 'react-router'
-
+import Transfer from './components/Transfer'
 function App() {
   const [account, setAccount] = useState(null);
   const navigate = useNavigate();
@@ -33,6 +33,7 @@ function App() {
         />
         <Route path="/wallet" element={<WalletHome account={account} onLogout={() => setAccount(null)} />} />
         <Route path="/account-info" element={<AccountInfo account={account} onLogout={() => setAccount(null)} />} />
+        <Route path="/transfer" element={<Transfer />} />
       </Routes>
     </main>
   )

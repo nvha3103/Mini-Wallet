@@ -20,6 +20,19 @@ module.exports = {
 
         const account = await Account.create({ fullName, phoneNumber, password: hashedPassword, email }).fetch()
 
+        if (account) {
+            console.log("đã có tài khoản")
+            const pocket = await Pocket.create({
+                account: account.id
+            }).fetch()
+            if (pocket) {
+                console.log("Đã tạo ví!")
+                return res.ok({
+                    message: "Create pocket successfully"
+                })
+            }
+        }
+
         delete account.password;
 
         return res.ok({

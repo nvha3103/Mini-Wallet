@@ -39,7 +39,7 @@ function WalletHome({ account }) {
 
             <nav className="wallet-actions" aria-label="Wallet actions">
                 <button onClick={() => navigate('/transfer')}>Transfer money</button>
-                <button onClick={() => navigate('/history')}>Transaction history</button>
+                {/* <button onClick={() => navigate('/history')}>Transaction history</button> */}
                 <button onClick={() => navigate('/account-info')}>Account info</button>
             </nav>
 

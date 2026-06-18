@@ -11,6 +11,7 @@
 
 .auth-form,
 .account-panel,
+.transfer-panel,
 .empty-state {
   width: min(100%, 430px);
   display: flex;
@@ -237,6 +238,35 @@
   box-shadow: 0 20px 45px rgba(15, 118, 110, 0.2);
 }
 
+.transfer-panel {
+  width: min(100%, 480px);
+}
+
+.transfer-balance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  text-align: left;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f766e, #134e4a);
+  border-radius: 8px;
+  box-shadow: 0 14px 32px rgba(15, 118, 110, 0.16);
+}
+
+.transfer-balance span {
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.transfer-balance strong {
+  color: #ffffff;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
 .balance-card p {
   margin: 0 0 10px;
   color: rgba(255, 255, 255, 0.72);
@@ -348,8 +378,14 @@
 
   .auth-form,
   .account-panel,
+  .transfer-panel,
   .empty-state {
     padding: 22px;
+  }
+
+  .transfer-balance {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .balance-card strong {
