@@ -1,7 +1,23 @@
 import { useNavigate } from 'react-router'
-
+import { useEffect, useState } from 'react'
 function WalletHome({ account }) {
     const navigate = useNavigate()
+    const [pocket, setPocket] = useState(null);
+
+    useEffect(() => {
+        async function loadPocket() {
+            const response = await fetch("/api/wallet/overview", {
+                method: 'POST',
+                credentials: 'include'
+            })
+            const result = await response.json()
+
+            setPocket(result.pocket);
+        }
+
+        loadPocket();
+
+    }, [])
 
     if (!account) {
         return (
@@ -32,7 +48,7 @@ function WalletHome({ account }) {
             <section className="balance-card">
                 <div>
                     <p>Available balance</p>
-                    <strong>1,000,000 VND</strong>
+                    <strong>{pocket ? pocket.balance : 'Loading...'} VND</strong>
                 </div>
                 <span className="wallet-number">0012002</span>
             </section>
