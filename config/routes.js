@@ -13,5 +13,7 @@ module.exports.routes = {
     'POST /api/auth/login': 'AccountController.login',
     'POST /api/auth/logout': 'AccountController.logout',
 
-    'POST /api/wallet/overview': 'WalletController.overview'
+    'POST /api/wallet/overview': 'WalletController.overview',
+
+    'POST /api/wallet/transfer': 'WalletController.transfer'
 };

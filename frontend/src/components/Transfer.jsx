@@ -1,9 +1,36 @@
 import { Link } from 'react-router'
+import { useState } from "react"
 
 function Transfer() {
-    function handleSubmit(e) {
+    const [phoneNumber, setPhoneNumber] = useState(null)
+    const [amount, setAmount] = useState(0)
+    const [message, setMessage] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+
+    async function handleSubmit(e) {
         e.preventDefault()
+        setMessage("")
+        setIsLoading(true)
         console.log('Transfer submitted')
+        const response = await fetch("/api/wallet/transfer", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                phoneNumber,
+                amount
+            })
+        })
+
+        const result = await response.json();
+        console.log("result", result)
+        if (result.err !== 200) {
+            setMessage(result.message || 'Transfer failed');
+            return;
+        }
+        setIsLoading(false);
     }
 
     return (
@@ -25,6 +52,7 @@ function Transfer() {
                 <input
                     type="text"
                     placeholder="0901234567"
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                 />
             </label>
 
@@ -34,11 +62,12 @@ function Transfer() {
                     type="number"
                     placeholder="100000"
                     min="1"
+                    onChange={(e) => setAmount(e.target.value)}
                 />
             </label>
 
             <button className="primary-button" type="submit">
-                Transfer money
+                {isLoading ? "Loading..." : "Transfer money"}
             </button>
         </form>
     )
