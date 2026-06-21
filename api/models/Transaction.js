@@ -24,7 +24,11 @@ module.exports = {
             min: 0
         },
         confirmedAt: {
-            type: 'string',
+            type: 'number',
+            allowNull: true
+        },
+        expiresAt: {
+            type: 'number',
             allowNull: true
         }
     }

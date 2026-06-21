@@ -1,12 +1,30 @@
 import { Link } from 'react-router'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from 'react-router'
 function Transfer() {
     const [phoneNumber, setPhoneNumber] = useState(null)
     const [amount, setAmount] = useState(0)
     const [message, setMessage] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [pocket, setPocket] = useState(null)
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const getPocket = async () => {
+            const response = await fetch("/api/wallet/overview", {
+                method: "POST",
+                credentials: "include"
+            })
+
+            const result = await response.json();
+            if (result.err !== 200) {
+                setMessage(result.message);
+                return;
+            }
+            setPocket(result.pocket)
+        }
+        getPocket();
+    }, [])
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -31,9 +49,14 @@ function Transfer() {
             setMessage(result.message || 'Transfer failed');
             return;
         }
+        // setPocket(result.pocketSend);
         setIsLoading(false);
         navigate(`/transfer/confirm/${result.transaction.id}`)
     }
+
+    // if (!pocket) {
+    //     return <p>Loading...</p>
+    // }
 
     return (
         <form className="transfer-panel" onSubmit={handleSubmit}>
@@ -46,7 +69,9 @@ function Transfer() {
 
             <section className="transfer-balance">
                 <span>Current balance</span>
-                <strong>1,000,000 VND</strong>
+                <strong> {pocket
+                    ? `${Number(pocket.balance).toLocaleString()} VND`
+                    : "Loading..."}</strong>
             </section>
 
             <label className="form-field">

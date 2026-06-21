@@ -12,6 +12,8 @@
 .auth-form,
 .account-panel,
 .transfer-panel,
+.transaction-detail-panel,
+.transaction-loading,
 .empty-state {
   width: min(100%, 430px);
   display: flex;
@@ -242,6 +244,116 @@
   width: min(100%, 480px);
 }
 
+.transaction-detail-panel {
+  width: min(100%, 560px);
+}
+
+.transaction-loading {
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+.transaction-loading p {
+  margin: 0;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.transaction-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.transaction-detail-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.transaction-detail-header p:not(.eyebrow) {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.transaction-summary {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.transaction-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.7fr) minmax(0, 1.3fr);
+  gap: 16px;
+  align-items: center;
+  padding: 13px 15px;
+  text-align: left;
+  background: #ffffff;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.transaction-row:last-child {
+  border-bottom: 0;
+}
+
+.transaction-row span {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.transaction-row strong {
+  min-width: 0;
+  color: #111827;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.transaction-amount {
+  background: #f0fdfa;
+}
+
+.transaction-amount strong {
+  color: #0f766e;
+  font-size: 18px;
+}
+
+.transaction-status {
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  color: #92400e !important;
+  background: #fef3c7;
+}
+
+.status-success {
+  color: #166534 !important;
+  background: #dcfce7;
+}
+
+.status-failed,
+.status-expired,
+.status-cancelled {
+  color: #9f1239 !important;
+  background: #ffe4e6;
+}
+
+.confirm-form {
+  display: grid;
+  gap: 16px;
+  padding-top: 2px;
+}
+
 .transfer-balance {
   display: flex;
   align-items: center;
@@ -379,8 +491,15 @@
   .auth-form,
   .account-panel,
   .transfer-panel,
+  .transaction-detail-panel,
+  .transaction-loading,
   .empty-state {
     padding: 22px;
+  }
+
+  .transaction-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
   }
 
   .transfer-balance {

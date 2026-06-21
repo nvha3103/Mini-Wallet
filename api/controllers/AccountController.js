@@ -67,6 +67,7 @@ module.exports = {
 
         req.session.accountId = account.id
         delete account.password;
+        delete account.personalCode;
 
         return res.ok({
             message: 'Login successfully',

@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
-import { useParams } from "react-router"
-import { useState } from "react"
+import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router'
 
 function TransactionDetail() {
 
@@ -25,7 +24,7 @@ function TransactionDetail() {
             })
 
             const res = await response.json();
-            console.log('res.transaction', res.transaction)
+            // console.log('res.transaction', res.transaction)
             setTransaction(res.transaction);
         }
 
@@ -35,7 +34,7 @@ function TransactionDetail() {
     const handleOnSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true)
-        console.log("bat dau submit");
+        // console.log("bat dau submit");
 
         const request = await fetch("/api/wallet/transfer/confirm", {
             method: "POST",
@@ -57,30 +56,69 @@ function TransactionDetail() {
     }
 
     if (!transaction) {
-        console.log("Neu chua co transaction")
-        return <p> 'Loading transaction...'</p>;
+        return (
+            <section className="transaction-loading">
+                <p>Loading transaction...</p>
+            </section>
+        )
     }
 
     return (
-        <>
-            <h2>Transaction Detail</h2>
-            <div>Sender: {transaction.sender}</div>
-            <div>Receive: {transaction.receiver}</div>
-            <div>Amount: {transaction.amount}</div>
-            <div>Status: {transaction.status}</div>
-            <div>Exprires At: {transaction.expiresAt}</div>
+        <section className="transaction-detail-panel">
+            <header className="transaction-detail-header">
+                <Link className="back-link" to="/transfer">Back to transfer</Link>
+                <p className="eyebrow">Review transfer</p>
+                <h2>Transaction details</h2>
+                <p>Check the information carefully before confirming.</p>
+            </header>
 
-            <form onSubmit={handleOnSubmit}>
-                <input
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={6}
-                    placeholder="Please enter your personal code"
-                    onChange={(e) => setPersonalCode(e.target.value)} />
+            <div className="transaction-summary">
+                <div className="transaction-row">
+                    <span>Sender</span>
+                    <strong>{transaction.sender}</strong>
+                </div>
+                <div className="transaction-row">
+                    <span>Receiver</span>
+                    <strong>{transaction.receiver}</strong>
+                </div>
+                <div className="transaction-row transaction-amount">
+                    <span>Amount</span>
+                    <strong>{Number(transaction.amount).toLocaleString()} VND</strong>
+                </div>
+                <div className="transaction-row">
+                    <span>Status</span>
+                    <strong className={`transaction-status status-${transaction.status}`}>
+                        {transaction.status}
+                    </strong>
+                </div>
+                <div className="transaction-row">
+                    <span>Expires at</span>
+                    <strong>
+                        {transaction.expiresAt
+                            ? new Date(transaction.expiresAt).toLocaleString()
+                            : 'Not available'}
+                    </strong>
+                </div>
+            </div>
 
-                <button type="submit">{isLoading ? "Loading..." : "Confirm"}</button>
+            <form className="confirm-form" onSubmit={handleOnSubmit}>
+                <label className="form-field">
+                    <span>Personal code</span>
+                    <input
+                        type="password"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={personalCode}
+                        placeholder="Enter your 6-digit code"
+                        onChange={(e) => setPersonalCode(e.target.value)}
+                    />
+                </label>
+
+                <button className="primary-button" type="submit" disabled={isLoading}>
+                    {isLoading ? 'Confirming...' : 'Confirm transfer'}
+                </button>
             </form>
-        </>
+        </section>
 
     )
 }
