@@ -16,6 +16,10 @@ module.exports = {
         password: {
             type: 'string',
             required: true
+        },
+        personalCode: {
+            type: 'string',
+            required: true
         }
     }
 }

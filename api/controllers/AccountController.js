@@ -3,7 +3,9 @@ const respCode = require('../services/respCode');
 
 module.exports = {
     register: async function (req, res) {
-        const { fullName, phoneNumber, email, password } = req.body;
+        console.log("Bắt đầu đăng kí tài khoản")
+
+        const { fullName, phoneNumber, email, password, personalCode } = req.body;
 
         if (!fullName || !email || !password || !phoneNumber) {
             return res.badRequest({
@@ -17,16 +19,23 @@ module.exports = {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPersonalCode = await bcrypt.hash(personalCode, 10)
+        const account = await Account.create({ fullName, phoneNumber, password: hashedPassword, email, personalCode: hashedPersonalCode }).fetch()
 
-        const account = await Account.create({ fullName, phoneNumber, password: hashedPassword, email }).fetch()
-
+        // if (pocket) {
+        //     console.log("Đã tạo tài khoản thành công")
+        // }
 
         const pocket = await Pocket.create({
             account: account.id
         }).fetch()
 
+        // if (pocket) {
+        //     console.log("Đã tạo ví thành công")
+        // }
 
         delete account.password;
+        delete account.personalCode;
 
         return res.ok({
             message: 'Register successfully',

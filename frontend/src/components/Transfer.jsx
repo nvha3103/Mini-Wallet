@@ -1,18 +1,19 @@
 import { Link } from 'react-router'
 import { useState } from "react"
-
+import { useNavigate } from 'react-router'
 function Transfer() {
     const [phoneNumber, setPhoneNumber] = useState(null)
     const [amount, setAmount] = useState(0)
     const [message, setMessage] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate();
 
     async function handleSubmit(e) {
         e.preventDefault()
         setMessage("")
         setIsLoading(true)
         console.log('Transfer submitted')
-        const response = await fetch("/api/wallet/transfer", {
+        const response = await fetch("/api/wallet/transfer/request", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -20,7 +21,7 @@ function Transfer() {
             credentials: "include",
             body: JSON.stringify({
                 phoneNumber,
-                amount
+                amount: Number(amount)
             })
         })
 
@@ -31,6 +32,7 @@ function Transfer() {
             return;
         }
         setIsLoading(false);
+        navigate(`/transfer/confirm/${result.transaction.id}`)
     }
 
     return (
@@ -67,7 +69,7 @@ function Transfer() {
             </label>
 
             <button className="primary-button" type="submit">
-                {isLoading ? "Loading..." : "Transfer money"}
+                {isLoading ? "Loading..." : "Continue"}
             </button>
         </form>
     )

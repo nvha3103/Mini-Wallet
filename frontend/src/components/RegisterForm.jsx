@@ -5,13 +5,42 @@ function RegisterForm({ onRegisterSuccess, onSwitchToLogin }) {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [personalCode, setPersonalCode] = useState('')
+    const [resetPersonalCode, setResetPersonalCode] = useState('')
     const [message, setMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+
+    function checkValidPersonalCode(s) {
+        // if (s.length === 6) {
+        //     for (const item of s) {
+        //         if (item < '0' || item > '9') {
+        //             console.log("Gía trị personal code không hợp lệ")
+        //             return false
+        //         }
+        //     }
+        //     return true;
+        // }
+        // return false
+        return typeof s == 'string' && /^\d{6}$/.test(s)
+    }
 
     async function handleSubmit(e) {
         e.preventDefault()
         setIsLoading(true)
         setMessage('')
+
+        if (!checkValidPersonalCode(personalCode)) {
+            console.log("Personal code chưa đúng định dạng")
+            setIsLoading(false)
+            return;
+        }
+
+        if (personalCode !== resetPersonalCode) {
+            console.log("Code khong trùng nhau")
+            setMessage("Please comfirm your personal code")
+            setIsLoading(false)
+            return;
+        }
 
         try {
             const response = await fetch('/api/auth/register', {
@@ -24,7 +53,9 @@ function RegisterForm({ onRegisterSuccess, onSwitchToLogin }) {
                     fullName,
                     phoneNumber,
                     email,
-                    password
+                    password,
+                    personalCode,
+
                 })
             })
 
@@ -88,6 +119,26 @@ function RegisterForm({ onRegisterSuccess, onSwitchToLogin }) {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                />
+            </label>
+
+            <label className="form-field">
+                <span>Personal Code</span>
+                <input
+                    type="string"
+                    placeholder="Enter your personal code"
+                    value={personalCode}
+                    onChange={(e) => setPersonalCode(e.target.value)}
+                />
+            </label>
+
+            <label className="form-field">
+                <span>Confirm Personal Code</span>
+                <input
+                    type="string"
+                    placeholder="Enter your personal code again"
+                    value={resetPersonalCode}
+                    onChange={(e) => setResetPersonalCode(e.target.value)}
                 />
             </label>
 
