@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 function WalletHome({ account }) {
     const navigate = useNavigate()
     const [pocket, setPocket] = useState(null);
-
+    const [transactions, setTransactions] = useState([]);
+    const [message, setMessage] = useState("")
     useEffect(() => {
         async function loadPocket() {
             const response = await fetch("/api/wallet/overview", {
@@ -16,6 +17,23 @@ function WalletHome({ account }) {
         }
 
         loadPocket();
+
+        async function loadTransactions() {
+            const response = await fetch("/api/wallet/transactions", {
+                method: "POST",
+                credentials: "include"
+            })
+
+            const result = await response.json();
+
+            if (result.err != 200) {
+                setMessage(result.message || "Cann't load transaction")
+                return;
+            }
+
+            setTransactions(result.transactions);
+        }
+        loadTransactions();
 
     }, [])
 
@@ -67,7 +85,44 @@ function WalletHome({ account }) {
                 </section>
                 <section>
                     <h2>Recent activity</h2>
-                    <p>No transactions yet.</p>
+                    {message && (
+                        <p className="form-message">{message}</p>
+                    )}
+
+                    {transactions.length === 0 ? (
+                        <p>No transactions yet.</p>
+                    ) : (
+                        <ul className="transaction-list">
+                            {transactions.map((item) => {
+                                const isSender = item.sender === account.id;
+
+                                return (
+                                    <li key={item.id} className="transaction-item">
+                                        <div>
+                                            <strong>
+                                                {isSender ? "Sent money" : "Received money"}
+                                            </strong>
+
+                                            <span>
+                                                {new Date(
+                                                    item.confirmedAt || item.createdAt
+                                                ).toLocaleString("vi-VN")}
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <strong className={isSender ? "money-out" : "money-in"}>
+                                                {isSender ? "-" : "+"}
+                                                {Number(item.amount).toLocaleString()} VND
+                                            </strong>
+
+                                            <span>{item.status}</span>
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    )}
                 </section>
             </div>
         </section>

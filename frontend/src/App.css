@@ -354,6 +354,40 @@
   padding-top: 2px;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.success-modal {
+  width: min(100%, 380px);
+  padding: 28px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #d9e1e8;
+  border-radius: 8px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.3);
+}
+
+.success-modal h3 {
+  margin: 0 0 10px;
+  color: #10233f;
+}
+
+.success-modal p {
+  margin: 0 0 22px;
+  color: #526174;
+}
+
+.success-modal .primary-button {
+  width: 100%;
+}
+
 .transfer-balance {
   display: flex;
   align-items: center;

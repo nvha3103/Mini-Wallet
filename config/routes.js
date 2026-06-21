@@ -17,6 +17,8 @@ module.exports.routes = {
 
     // 'POST /api/wallet/transfer': 'WalletController.transfer',
 
+    'POST /api/wallet/transactions': 'WalletController.history',
+
     'POST /api/wallet/transfer/request': 'WalletController.request',
     'POST /api/wallet/transfer/confirm': 'WalletController.confirm',
     'POST /api/wallet/transfer/detail': 'WalletController.detail',

@@ -354,6 +354,27 @@ module.exports = {
         // console.log("Ket thuc logic confirm.....")
 
 
+    },
+
+    history: async function (req, res) {
+        const accountId = req.session.accountId;
+
+        if (!accountId) {
+            return res.error(respCode.UNAUTHORIZED, "Please login");
+        }
+
+        const transactions = await Transaction.find({
+            or: [
+                { sender: accountId },
+                { receiver: accountId }
+            ]
+        }).sort("createdAt DESC").limit(10)
+
+        return res.ok({
+            message: "Transactions loaded success",
+            transactions
+        })
     }
+
 
 };
