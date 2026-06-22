@@ -11,7 +11,8 @@ function TransactionDetail() {
     const navigate = useNavigate();
     const [showSuccess, setShowSuccess] = useState(false)
     const [message, setMessage] = useState("")
-
+    const [remainingTime, setRemainingTime] = useState(null);
+    const isExpired = remainingTime === 0;
     useEffect(() => {
         const getTransaction = async () => {
             try {
@@ -32,13 +33,45 @@ function TransactionDetail() {
                 }
 
                 setTransaction(result.transaction);
+
             } catch (error) {
                 setMessage("Cannot connect to server");
             }
         };
 
         getTransaction();
+
+
     }, [transactionId]);
+
+    useEffect(() => {
+        if (!transaction?.expiresAt) {
+            return;
+        }
+
+        const updateCountdown = () => {
+            const millisecondsLeft =
+                Number(transaction.expiresAt) - Date.now();
+
+            const secondsLeft = Math.max(0, Math.ceil(millisecondsLeft / 1000));
+
+            setRemainingTime(secondsLeft);
+        };
+
+        updateCountdown();
+
+        const timerId = setInterval(updateCountdown, 1000);
+
+        return () => clearInterval(timerId);
+    }, [transaction?.expiresAt]);
+
+    function formatCountdown(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
     const handleOnSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true)
@@ -93,11 +126,11 @@ function TransactionDetail() {
             <div className="transaction-summary">
                 <div className="transaction-row">
                     <span>Sender</span>
-                    <strong>{transaction.sender}</strong>
+                    <strong>{transaction.senderName}</strong>
                 </div>
                 <div className="transaction-row">
                     <span>Receiver</span>
-                    <strong>{transaction.receiver}</strong>
+                    <strong>{transaction.receiverName}</strong>
                 </div>
                 <div className="transaction-row transaction-amount">
                     <span>Amount</span>
@@ -109,17 +142,44 @@ function TransactionDetail() {
                         {transaction.status}
                     </strong>
                 </div>
+
                 <div className="transaction-row">
                     <span>Expires at</span>
                     <strong>
+                        {new Date(transaction.expiresAt).toLocaleString()}
+                    </strong>
+                </div>
+
+                <div className="transaction-row">
+                    <span>Time remaining</span>
+                    <strong
+                        className={
+                            isExpired
+                                ? "countdown countdown-expired"
+                                : "countdown"
+                        }
+                    >
+                        {remainingTime === null
+                            ? "--:--"
+                            : isExpired
+                                ? "Expired"
+                                : formatCountdown(remainingTime)}
+                    </strong>
+                    {/* <strong>
                         {transaction.expiresAt
                             ? new Date(transaction.expiresAt).toLocaleString()
                             : 'Not available'}
-                    </strong>
+                    </strong> */}
                 </div>
             </div>
 
-            {transaction.status === "pending" && (
+            {isExpired && (
+                <p className="form-message form-message-error">
+                    Transaction has expired. Please create a new transfer request.
+                </p>
+            )}
+
+            {transaction.status === "pending" && !isExpired && (
                 <form className="confirm-form" onSubmit={handleOnSubmit}>
                     <label className="form-field">
                         <span>Personal code</span>
@@ -140,6 +200,7 @@ function TransactionDetail() {
                         {isLoading ? 'Confirming...' : 'Confirm transfer'}
                     </button>
                 </form>
+
             )}
             {showSuccess && (
                 <div className="modal-backdrop">

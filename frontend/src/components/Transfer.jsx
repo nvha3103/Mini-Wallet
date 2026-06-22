@@ -30,7 +30,26 @@ function Transfer() {
         e.preventDefault()
         setMessage("")
         setIsLoading(true)
-        console.log('Transfer submitted')
+        // console.log('Transfer submitted')
+
+        const numericAmount = Number(amount);
+
+        if (!phoneNumber?.trim()) {
+            setMessage("Receiver phone number is required");
+            return;
+        }
+
+        if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+            setMessage("Amount must be greater than zero");
+            return;
+        }
+
+        if (pocket && numericAmount > Number(pocket.balance)) {
+            setMessage("Balance is not enough");
+            setIsLoading(false);
+            return;
+        }
+
         const response = await fetch("/api/wallet/transfer/request", {
             method: "POST",
             headers: {
@@ -44,7 +63,7 @@ function Transfer() {
         })
 
         const result = await response.json();
-        console.log("result", result)
+        // console.log("result", result)
         if (result.err !== 200) {
             setMessage(result.message || 'Transfer failed');
             return;
@@ -94,8 +113,14 @@ function Transfer() {
             </label>
 
             <button className="primary-button" type="submit">
-                {isLoading ? "Loading..." : "Continue"}
+                Continue
             </button>
+
+            {message && (
+                <p className="form-message form-message-error" role="alert">
+                    {message}
+                </p>
+            )}
         </form>
     )
 }

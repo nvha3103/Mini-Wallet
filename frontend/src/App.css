@@ -505,6 +505,15 @@
   overflow-wrap: anywhere;
 }
 
+.countdown {
+  color: #b45309;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-expired {
+  color: #b91c1c;
+}
+
 @media (max-width: 700px) {
   .app-shell {
     align-items: start;

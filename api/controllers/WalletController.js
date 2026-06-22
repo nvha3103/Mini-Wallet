@@ -87,33 +87,39 @@ module.exports = {
 
         const phoneNumberReceive = req.body.phoneNumber;
         const amountSend = req.body.amount;
+        if (!Number.isFinite(amountSend) || amountSend <= 0) {
+            return res.error(
+                respCode.BAD_REQUEST,
+                "Amount must be greater than zero"
+            );
+        }
 
         const accountReceiver = await Account.findOne({ phoneNumber: phoneNumberReceive })
         if (!accountReceiver) {
-            return res.error({
-                message: "accountRêciver is undefined "
-            })
+            return res.error(
+                respCode.NOT_FOUND,
+                "Receiver phone number doesn't exist"
+            )
         }
 
         if (accountReceiver.id === accountId) {
-            return res.error(message = "AccountReceiver is similar to accountSend")
+            return res.error(
+                respCode.BAD_REQUEST,
+                "Cannot transfer to your own account"
+            );
         }
 
         const pocketSend = await Pocket.findOne({ account: accountId })
 
-
         const pocketReceiver = await Pocket.findOne({ account: accountReceiver.id })
 
-        if (pocketSend.balance === 0) {
-            return res.error({
-                message: "Balance isn't enough to transfer"
-            })
-        }
 
-        if (amountSend <= 0 || amountSend > pocketSend.balance) {
-            return res.error({
-                message: "Amount is not valid"
-            })
+
+        if (amountSend > Number(pocketSend.balance)) {
+            return res.error(
+                respCode.BAD_REQUEST,
+                "Balance is not enough"
+            );
         }
 
 
@@ -125,7 +131,7 @@ module.exports = {
             failedAttempts: 0,
             confirmedAt: null,
             amount: amountSend,
-            expiresAt: Date.now() + 5 * 60 * 1000
+            expiresAt: Date.now() + 60 * 1000 //1ph
         }).fetch();
 
         if (transaction) {
@@ -141,14 +147,37 @@ module.exports = {
         const transactionId = req.body.transactionId;
         const accountId = req.session.accountId;
 
+        const accountSender = await Account.findOne({ id: accountId })
         const transaction = await Transaction.findOne({ id: transactionId })
         if (accountId !== transaction.sender) {
             return res.error(respCode.UNAUTHORIZED, "")
         }
 
+        if (!accountSender) {
+            return res.error(
+                respCode.NOT_FOUND,
+                "Account not found"
+            )
+        }
+        const accountReceiver = await Account.findOne({ id: transaction.receiver })
+        if (!accountReceiver) {
+            return res.error(
+                respCode.NOT_FOUND,
+                "Account not found"
+            )
+        }
+
+        const senderName = accountSender.fullName;
+        const receiverName = accountReceiver.fullName;
+
+
         return res.ok({
             message: "Tim thay transaction",
-            transaction
+            transaction: {
+                ...transaction,
+                senderName: accountSender.fullName,
+                receiverName: accountReceiver.fullName
+            }
         })
     },
 
@@ -168,7 +197,7 @@ module.exports = {
         }
 
         if (!transactionId) {
-            return res.error(respCode.BAD_REQUEST, "transactionId is required")
+            return res.error(respCode.BAD_REQUEST, "TransactionId is required.")
         }
 
         if (!/^\d{6}$/.test(personalCode)) {
@@ -194,7 +223,7 @@ module.exports = {
             }).set({
                 status: "expired"
             })
-            return res.error(respCode.BAD_REQUEST, "transaction has expired")
+            return res.error(respCode.BAD_REQUEST, "Transaction has expired. Please recreate a new transaction")
         }
 
         if (transaction.status !== "pending") {
